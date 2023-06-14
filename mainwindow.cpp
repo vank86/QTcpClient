@@ -29,7 +29,7 @@ void MainWindow::sendToServer(QString str)
     Data.clear();
     QDataStream out(&Data, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_3);
-    out << quint16(0) << str;
+    out << quint16(0) << QTime::currentTime() << str;
     out.device()->seek(0);
     out << quint16(Data.size() - sizeof(quint16));
 
@@ -56,9 +56,10 @@ void MainWindow::slotReadyRead()
                 break;
             }
             QString str;
-            in >> str;
+            QTime time;
+            in >> time >> str;
             nextBlockSize = 0;
-            ui->textBrowser->append(str);
+            ui->textBrowser->append("[" + time.toString() + "]" + " " + str);
         }
 //        QString str;
 //        in >> str;
